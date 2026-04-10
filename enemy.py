@@ -1,6 +1,6 @@
 import pygame
 import random
-from settings import SCREEN_W, SCREEN_H, ENEMY_TYPES, POWERUP_DROP_RATES
+from settings import SCREEN_W, SCREEN_H, ENEMY_TYPES, POWERUP_DROP_RATES, ENEMY_SHOOT_COOLDOWN
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -15,24 +15,24 @@ class Enemy(pygame.sprite.Sprite):
         size       = 30 if kind == "purple" else 24
         self.image = self._make_surface(size)
 
-        if stage == 1:
+        if stage == 1 or stage == 3:
             self.rect = self.image.get_rect(
                 centerx=random.randint(20, SCREEN_W - 20),
                 bottom=0
             )
-            self._base_x = float(self.rect.x)
-            self._base_y = float(self.rect.y)
         else:
-            # Stage 2: entrano da destra
             self.rect = self.image.get_rect(
                 left=SCREEN_W,
                 centery=random.randint(20, SCREEN_H - 20)
             )
-            self._base_x = float(self.rect.x)
-            self._base_y = float(self.rect.y)
 
-        self._dir   = random.choice([-1, 1])
-        self._frame = random.randint(0, 100)
+        self._base_x = float(self.rect.x)
+        self._base_y = float(self.rect.y)
+        self._dir    = random.choice([-1, 1])
+        self._frame  = random.randint(0, 100)
+
+        # Sparo (solo gialli)
+        self.shoot_timer = random.randint(0, ENEMY_SHOOT_COOLDOWN)
 
     def _make_surface(self, size):
         surf = pygame.Surface((size, size), pygame.SRCALPHA)
@@ -48,10 +48,10 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self._frame += 1
 
-        if self.stage == 1:
+        if self.stage in (1, 3):
             self.rect.y += self.speed
-            # Arancioni rimbalzano lateralmente
-            if self.kind == "orange":
+            # Arancioni e gialli rimbalzano lateralmente
+            if self.kind in ("orange", "yellow"):
                 self._base_x += self.speed * 1.2 * self._dir
                 if self._base_x <= 0:
                     self._base_x = 0
@@ -63,10 +63,8 @@ class Enemy(pygame.sprite.Sprite):
             if self.rect.top > SCREEN_H:
                 self.kill()
                 return "escaped"
-
         else:
             self.rect.x -= self.speed
-            # Arancioni rimbalzano su e giu
             if self.kind == "orange":
                 self._base_y += self.speed * 1.2 * self._dir
                 if self._base_y <= 0:
@@ -80,6 +78,14 @@ class Enemy(pygame.sprite.Sprite):
                 self.kill()
                 return "escaped"
 
+        # Sparo gialli
+        if self.kind == "yellow":
+            if self.shoot_timer > 0:
+                self.shoot_timer -= 1
+            if self.shoot_timer == 0:
+                self.shoot_timer = ENEMY_SHOOT_COOLDOWN
+                return "shoot"
+
     def hit(self):
         self.hp -= 1
         if self.hp <= 0:
@@ -88,6 +94,8 @@ class Enemy(pygame.sprite.Sprite):
         return False
 
     def get_drop(self):
+        if self.kind == "yellow":
+            return None
         kind, rate = POWERUP_DROP_RATES[self.kind]
         if random.random() < rate:
             return kind

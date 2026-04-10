@@ -39,11 +39,12 @@ ENEMY_TYPES = {
     "red":    (2, RED,    (255, 130, 130), 1.8, 10),
     "orange": (1, ORANGE, (255, 210, 130), 2.5, 15),
     "purple": (3, PURPLE, PURPLE_LT,       1.1, 30),
+    "yellow": (2, (255, 220, 50), (255, 240, 150), 1.5, 30),
 }
 
 # Boss
 BOSS_TRIGGER_SCORE  = 0   # punteggio per far apparire il boss
-BOSS_HP             = 1
+BOSS_HP             = 2
 BOSS_SPEED          = 1.8   # velocita movimento laterale
 BOSS_SHOOT_COOLDOWN = 60    # frame tra un colpo e l'altro (60 = 1 proiettile/sec)
 BOSS_BULLET_SPEED   = 3
@@ -75,8 +76,8 @@ PERM_PIERCE_MAX_HITS   = 999   # perforante: colpisce tutti i nemici, sparisce s
 STAGE2_TRIGGER = "boss_defeated"   # il secondo stage inizia dopo il boss
 
 # Boss 2
-BOSS2_TRIGGER_SCORE   = 10
-BOSS2_HP              = 40
+BOSS2_TRIGGER_SCORE   = 4
+BOSS2_HP              = 4
 BOSS2_SPEED           = 1.5   # velocita movimento verticale
 BOSS2_SHOOT_COOLDOWN  = 50    # proiettili normali
 BOSS2_BULLET_SPEED    = 4
@@ -87,3 +88,36 @@ BOSS2_LASER_WARNING   = 60    # frame avviso lampeggio (1 sec)
 BOSS2_LASER_DURATION  = 60 * 8  # frame laser attivo (8 sec)
 BOSS2_LASER_COOLDOWN  = 60 * 6  # frame tra un laser e l'altro (6 sec)
 BOSS2_LASER_H         = 100   # altezza fascia laser in pixel
+
+# Nemico giallo
+YELLOW        = (255, 220, 50)
+YELLOW_LT     = (255, 240, 150)
+ENEMY_BULLET_SPEED   = 4
+ENEMY_SHOOT_COOLDOWN = 60   # 1 colpo al secondo
+
+# Stage 3
+STAGE3_TRIGGER = "boss2_defeated"
+
+# Power-up boss 2 (split)
+PERM_SPLIT_SPEED = 5   # velocita dei proiettili figli dopo lo split
+
+# Boss Finale (stage 3)
+BOSS3_TRIGGER_SCORE   = 100
+BOSS3_HP              = 1
+BOSS3_SPEED           = 2.2
+BOSS3_SHOOT_COOLDOWN  = 30    # 0.5 secondi tra un colpo e l altro
+BOSS3_BULLET_SPEED    = 5
+BOSS3_COLOR           = (220, 30, 30)
+BOSS3_COLOR_LT        = (255, 120, 120)
+BOSS3_ENTRY_Y         = 80
+BOSS3_LASER_WARNING   = 30    # 0.5 secondi di preavviso
+BOSS3_LASER_DURATION  = 60 * 8
+BOSS3_LASER_COOLDOWN  = 60 * 5
+BOSS3_LASER_H         = 100
+
+# Power-up boss 3
+PERM_SPEED_BONUS = 1.25   # moltiplicatore velocita navicella +25%
+
+# Modalita infinito
+INFINITE_BASE_SPAWN  = 60   # spawn rate iniziale modalita infinito
+INFINITE_MIN_SPAWN   = 10   # spawn rate minimo
