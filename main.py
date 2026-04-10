@@ -504,7 +504,7 @@ def run_game(screen, clock):
             # --- NEMICI NORMALI (entrambi gli stage) ---
             can_spawn = (stage == 1 and (not boss_spawned or boss_defeated) and score < BOSS_TRIGGER_SCORE) \
                      or (stage == 2 and not boss2_spawned and score < BOSS2_TRIGGER_SCORE) \
-                     or (stage == 3 and boss2_defeated and not boss3_spawned and score < BOSS3_TRIGGER_SCORE)\
+                     or (stage == 3 and boss2_defeated and not boss3_spawned and score < BOSS3_TRIGGER_SCORE) \
                      or (infinite_mode)
             if can_spawn:
                 sr = get_spawn_rate(score, infinite=infinite_mode)

@@ -43,8 +43,8 @@ ENEMY_TYPES = {
 }
 
 # Boss
-BOSS_TRIGGER_SCORE  = 0   # punteggio per far apparire il boss
-BOSS_HP             = 2
+BOSS_TRIGGER_SCORE  = 500   # punteggio per far apparire il boss
+BOSS_HP             = 20
 BOSS_SPEED          = 1.8   # velocita movimento laterale
 BOSS_SHOOT_COOLDOWN = 60    # frame tra un colpo e l'altro (60 = 1 proiettile/sec)
 BOSS_BULLET_SPEED   = 3
@@ -76,8 +76,8 @@ PERM_PIERCE_MAX_HITS   = 999   # perforante: colpisce tutti i nemici, sparisce s
 STAGE2_TRIGGER = "boss_defeated"   # il secondo stage inizia dopo il boss
 
 # Boss 2
-BOSS2_TRIGGER_SCORE   = 4
-BOSS2_HP              = 4
+BOSS2_TRIGGER_SCORE   = 4000
+BOSS2_HP              = 40
 BOSS2_SPEED           = 1.5   # velocita movimento verticale
 BOSS2_SHOOT_COOLDOWN  = 50    # proiettili normali
 BOSS2_BULLET_SPEED    = 4
@@ -102,8 +102,8 @@ STAGE3_TRIGGER = "boss2_defeated"
 PERM_SPLIT_SPEED = 5   # velocita dei proiettili figli dopo lo split
 
 # Boss Finale (stage 3)
-BOSS3_TRIGGER_SCORE   = 100
-BOSS3_HP              = 1
+BOSS3_TRIGGER_SCORE   = 9000
+BOSS3_HP              = 60
 BOSS3_SPEED           = 2.2
 BOSS3_SHOOT_COOLDOWN  = 30    # 0.5 secondi tra un colpo e l altro
 BOSS3_BULLET_SPEED    = 5
