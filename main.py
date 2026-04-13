@@ -81,7 +81,7 @@ def save_highscore(score):
 # SCHERMATA TRANSIZIONE STAGE
 # ---------------------------------------------------------------------------
 
-def stage_transition(screen, clock, stars, font_big, font_med, stage_num=2):
+def stage_transition(screen, clock, stars, font_big, font_med, stage_num=2, ocean=None):
     """Mostra il numero di stage per 2 secondi prima di continuare."""
     for frame in range(FPS * 2):
         clock.tick(FPS)
@@ -89,7 +89,8 @@ def stage_transition(screen, clock, stars, font_big, font_med, stage_num=2):
             if event.type == pygame.QUIT:
                 pygame.quit(); sys.exit()
         for s in stars: s.update()
-        ocean.draw(screen)
+        if ocean: ocean.update(); ocean.draw(screen)
+        else: screen.fill((20, 80, 140))
         for s in stars: s.draw(screen)
         overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
@@ -103,7 +104,7 @@ def stage_transition(screen, clock, stars, font_big, font_med, stage_num=2):
 # SCHERMATA TRANSIZIONE MODALITA INFINITO
 # ---------------------------------------------------------------------------
 
-def infinite_transition(screen, clock, stars, font_big, font_med):
+def infinite_transition(screen, clock, stars, font_big, font_med, ocean=None):
     for frame in range(FPS * 3):
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -112,7 +113,8 @@ def infinite_transition(screen, clock, stars, font_big, font_med):
             if event.type == pygame.KEYDOWN:
                 return
         for s in stars: s.update()
-        ocean.draw(screen)
+        if ocean: ocean.update(); ocean.draw(screen)
+        else: screen.fill((20, 80, 140))
         for s in stars: s.draw(screen)
         overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
@@ -127,7 +129,7 @@ def infinite_transition(screen, clock, stars, font_big, font_med):
 # SCHERMATA SCELTA UPGRADE
 # ---------------------------------------------------------------------------
 
-def upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, options_keys=None):
+def upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, options_keys=None, ocean=None):
     all_upgrades = {
         "triple": ("Triplo sparo",   ["Spara 3 proiettili", "contemporaneamente"],  (255, 200, 80)),
         "fast":   ("Cadenza x2",    ["4 colpi al secondo", "permanentemente"],       (80,  200, 255)),
@@ -348,7 +350,7 @@ def run_game(screen, clock):
                         boss = None
                         boss_bullets.empty()
                         # Schermata upgrade
-                        upgrade = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small)
+                        upgrade = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, ocean=ocean)
                         player.activate_perm_upgrade(upgrade)
                         # Transizione stage 2
                         stage = 2
@@ -358,7 +360,7 @@ def run_game(screen, clock):
                         enemies.empty()
                         powerups.empty()
                         particles.clear()
-                        stage_transition(screen, clock, stars, font_big, font_med, stage_num=2)
+                        stage_transition(screen, clock, stars, font_big, font_med, stage_num=2, ocean=ocean)
 
             # --- BOSS 2 (stage 2) ---
             if stage == 2 and score >= BOSS2_TRIGGER_SCORE and not boss2_spawned and len(enemies) == 0:
@@ -419,7 +421,7 @@ def run_game(screen, clock):
                     boss2_bullets.empty()
                     # Schermata upgrade boss 2
                     available = player.get_available_upgrades()[:2] + ["split"]
-                    upgrade2 = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, available)
+                    upgrade2 = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, available, ocean=ocean)
                     player.activate_perm_upgrade(upgrade2)
                     # Transizione stage 3
                     stage = 3
@@ -431,7 +433,7 @@ def run_game(screen, clock):
                     enemy_bullets.empty()
                     powerups.empty()
                     particles.clear()
-                    stage_transition(screen, clock, stars, font_big, font_med, stage_num=3)
+                    stage_transition(screen, clock, stars, font_big, font_med, stage_num=3, ocean=ocean)
 
             # --- BOSS 3 (stage 3) ---
             if stage == 3 and score >= BOSS3_TRIGGER_SCORE and not boss3_spawned and len(enemies) == 0:
@@ -497,7 +499,7 @@ def run_game(screen, clock):
                     particles.clear()
                     # Upgrade boss 3
                     available = [u for u in player.get_available_upgrades() if u != "speed"][:2] + ["speed"]
-                    upgrade3 = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, available)
+                    upgrade3 = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, available, ocean=ocean)
                     player.activate_perm_upgrade(upgrade3)
                     # Transizione modalita infinito
                     infinite_mode = True
@@ -505,7 +507,7 @@ def run_game(screen, clock):
                     enemy_bullets.empty()
                     powerups.empty()
                     particles.clear()
-                    infinite_transition(screen, clock, stars, font_big, font_med)
+                    infinite_transition(screen, clock, stars, font_big, font_med, ocean=ocean)
 
             # --- NEMICI NORMALI (entrambi gli stage) ---
             can_spawn = (stage == 1 and (not boss_spawned or boss_defeated) and score < BOSS_TRIGGER_SCORE) \
