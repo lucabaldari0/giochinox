@@ -10,7 +10,7 @@ from bullet import Bullet
 SPRITESHEET_PATH = os.path.join("assets", "turtle_spritesheet.png")
 FRAME_SIZE       = 64    # ogni frame e 64x64
 FRAME_COUNT      = 4
-ANIM_SPEED       = 8     # cambia frame ogni 8 frame di gioco
+ANIM_SPEED       = 16     # cambia frame ogni 8 frame di gioco
 
 
 def _make_fallback(angle=0):

@@ -10,6 +10,7 @@ from settings import (
     INFINITE_BASE_SPAWN, INFINITE_MIN_SPAWN
 )
 from star     import Star
+from background import OceanBackground
 from player   import Player
 from enemy    import Enemy
 from particle import Particle
@@ -88,7 +89,7 @@ def stage_transition(screen, clock, stars, font_big, font_med, stage_num=2):
             if event.type == pygame.QUIT:
                 pygame.quit(); sys.exit()
         for s in stars: s.update()
-        screen.fill(BLACK)
+        ocean.draw(screen)
         for s in stars: s.draw(screen)
         overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
@@ -111,7 +112,7 @@ def infinite_transition(screen, clock, stars, font_big, font_med):
             if event.type == pygame.KEYDOWN:
                 return
         for s in stars: s.update()
-        screen.fill(BLACK)
+        ocean.draw(screen)
         for s in stars: s.draw(screen)
         overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
@@ -154,7 +155,7 @@ def upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, 
                 return key_map[event.key]
 
         for s in stars: s.update()
-        screen.fill(BLACK)
+        ocean.draw(screen)
         for s in stars: s.draw(screen)
         overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
@@ -195,6 +196,7 @@ def upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, 
 
 def menu(screen, clock, font_big, font_med, font_small):
     stars = make_stars(stage=1)
+    ocean = OceanBackground()
     while True:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -203,8 +205,9 @@ def menu(screen, clock, font_big, font_med, font_small):
             if event.type == pygame.KEYDOWN:
                 if event.key in (pygame.K_RETURN, pygame.K_SPACE):
                     return
+        ocean.update()
         for s in stars: s.update()
-        screen.fill(BLACK)
+        ocean.draw(screen)
         for s in stars: s.draw(screen)
         title = font_big.render("SPACE SHOOTER", True, GREEN)
         screen.blit(title, title.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 - 60)))
@@ -223,6 +226,7 @@ def run_game(screen, clock):
 
     stage        = 1
     stars        = make_stars(stage=1)
+    ocean        = OceanBackground()
     player       = Player()
     bullets      = pygame.sprite.Group()
     enemies      = pygame.sprite.Group()
@@ -277,6 +281,7 @@ def run_game(screen, clock):
             if flash_timer > 0: flash_timer -= 1
             if invincible > 0:  invincible -= 1
 
+            ocean.update()
             for s in stars: s.update()
             player.update(keys)
 
@@ -419,6 +424,7 @@ def run_game(screen, clock):
                     # Transizione stage 3
                     stage = 3
                     stars = make_stars(stage=1)
+                    ocean = OceanBackground()
                     player.set_stage(1)
                     bullets.empty()
                     enemies.empty()
@@ -504,7 +510,7 @@ def run_game(screen, clock):
             # --- NEMICI NORMALI (entrambi gli stage) ---
             can_spawn = (stage == 1 and (not boss_spawned or boss_defeated) and score < BOSS_TRIGGER_SCORE) \
                      or (stage == 2 and not boss2_spawned and score < BOSS2_TRIGGER_SCORE) \
-                     or (stage == 3 and boss2_defeated and not boss3_spawned and score < BOSS3_TRIGGER_SCORE) \
+                     or (stage == 3 and boss2_defeated and not boss3_spawned and score < BOSS3_TRIGGER_SCORE)\
                      or (infinite_mode)
             if can_spawn:
                 sr = get_spawn_rate(score, infinite=infinite_mode)
@@ -577,7 +583,7 @@ def run_game(screen, clock):
             particles = [p for p in particles if p.update()]
 
         # ---- DRAW ----
-        screen.fill(BLACK)
+        ocean.draw(screen)
         for s in stars: s.draw(screen)
 
         for e in enemies:

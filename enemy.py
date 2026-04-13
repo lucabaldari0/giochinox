@@ -1,6 +1,71 @@
 import pygame
 import random
+import os
 from settings import SCREEN_W, SCREEN_H, ENEMY_TYPES, POWERUP_DROP_RATES, ENEMY_SHOOT_COOLDOWN
+
+ANIM_SPEED = {
+    "red":    16,
+    "orange": 30,
+    "purple": 18,
+    "yellow": 12,
+}
+
+# Spritesheet per ogni tipo di nemico
+ENEMY_SHEETS = {
+    "red":    os.path.join("assets", "red_spritesheet.png"),
+    "orange": os.path.join("assets", "orange_spritesheet.png"),
+    "purple": os.path.join("assets", "purple_spritesheet.png"),
+    "yellow": None,
+}
+ENEMY_FRAME_COUNT = 4
+ENEMY_FRAME_SIZE  = 40   # usato solo per red, gli altri vengono divisi in 4 parti uguali
+
+_enemy_frames = {}   # cache: kind -> (frames_v, frames_h)
+
+def _load_enemy_frames(kind, color, color_lt):
+    """Carica i frame per un tipo di nemico. Fallback geometrico se non trovato."""
+    if kind in _enemy_frames:
+        return _enemy_frames[kind]
+
+    path = ENEMY_SHEETS.get(kind)
+    if path and os.path.exists(path):
+        try:
+            sheet = pygame.image.load(path).convert_alpha()
+            frame_w = sheet.get_width() // ENEMY_FRAME_COUNT
+            frame_h = sheet.get_height()
+            frames = []
+            for i in range(ENEMY_FRAME_COUNT):
+                frame = sheet.subsurface((i * frame_w, 0, frame_w, frame_h))
+                frames.append(frame)
+            frames_v = frames
+            frames_h = [pygame.transform.rotate(f, 90) for f in frames]
+        except Exception as e:
+            print(f"[ENEMY SPRITE ERROR] {kind}: {e}")
+            size = 30 if kind == "purple" else 24
+            surf = _make_fallback(size, color, color_lt)
+            surf_h = pygame.transform.rotate(surf, 90)
+            frames_v = [surf] * ENEMY_FRAME_COUNT
+            frames_h = [surf_h] * ENEMY_FRAME_COUNT
+    else:
+        # Fallback geometrico
+        size = 30 if kind == "purple" else 24
+        surf = _make_fallback(size, color, color_lt)
+        surf_h = pygame.transform.rotate(surf, 90)
+        frames_v = [surf] * ENEMY_FRAME_COUNT
+        frames_h = [surf_h] * ENEMY_FRAME_COUNT
+
+    _enemy_frames[kind] = (frames_v, frames_h)
+    return frames_v, frames_h
+
+
+def _make_fallback(size, color, color_lt):
+    surf = pygame.Surface((size, size), pygame.SRCALPHA)
+    half = size // 2
+    points = [(half, size), (0, half//2), (half//4, 0), (3*half//4, 0), (size, half//2)]
+    inner  = [(half, size-8), (6, half), (half, 6), (size-6, half)]
+    pygame.draw.polygon(surf, color, points)
+    pygame.draw.polygon(surf, color_lt, inner)
+    return surf
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -12,10 +77,12 @@ class Enemy(pygame.sprite.Sprite):
         self.hp    = self.max_hp
         self.speed = speed_base + random.uniform(-0.2, 0.4)
 
-        size       = 30 if kind == "purple" else 24
-        self.image = self._make_surface(size)
+        self._frames_v, self._frames_h = _load_enemy_frames(kind, self.color, self.color_lt)
+        self._anim_frame = 0
+        self._anim_timer = 0
+        self.image = self._frames_v[0] if stage != 2 else self._frames_h[0]
 
-        if stage == 1 or stage == 3:
+        if stage in (1, 3):
             self.rect = self.image.get_rect(
                 centerx=random.randint(20, SCREEN_W - 20),
                 bottom=0
@@ -30,27 +97,20 @@ class Enemy(pygame.sprite.Sprite):
         self._base_y = float(self.rect.y)
         self._dir    = random.choice([-1, 1])
         self._frame  = random.randint(0, 100)
-
-        # Sparo (solo gialli)
         self.shoot_timer = random.randint(0, ENEMY_SHOOT_COOLDOWN)
 
-    def _make_surface(self, size):
-        surf = pygame.Surface((size, size), pygame.SRCALPHA)
-        half = size // 2
-        points = [(half, size), (0, half // 2), (half // 4, 0), (3 * half // 4, 0), (size, half // 2)]
-        inner  = [(half, size - 8), (6, half), (half, 6), (size - 6, half)]
-        pygame.draw.polygon(surf, self.color, points)
-        pygame.draw.polygon(surf, self.color_lt, inner)
-        if self.stage == 2:
-            surf = pygame.transform.rotate(surf, 90)
-        return surf
-
     def update(self):
+        # Animazione
+        self._anim_timer += 1
+        if self._anim_timer >= ANIM_SPEED[self.kind]:
+            self._anim_timer = 0
+            self._anim_frame = (self._anim_frame + 1) % ENEMY_FRAME_COUNT
+        self.image = self._frames_h[self._anim_frame] if self.stage == 2 else self._frames_v[self._anim_frame]
+
         self._frame += 1
 
         if self.stage in (1, 3):
             self.rect.y += self.speed
-            # Arancioni e gialli rimbalzano lateralmente
             if self.kind in ("orange", "yellow"):
                 self._base_x += self.speed * 1.2 * self._dir
                 if self._base_x <= 0:
@@ -78,7 +138,6 @@ class Enemy(pygame.sprite.Sprite):
                 self.kill()
                 return "escaped"
 
-        # Sparo gialli
         if self.kind == "yellow":
             if self.shoot_timer > 0:
                 self.shoot_timer -= 1
