@@ -6,7 +6,7 @@
 SCREEN_W = 600
 SCREEN_H = 700
 FPS      = 60
-TITLE    = "Space Shooter"
+TITLE    = "Shell vs Trash"
 
 # Giocatore
 PLAYER_SPEED    = 4

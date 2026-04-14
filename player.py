@@ -162,4 +162,4 @@ class Player(pygame.sprite.Sprite):
 
     def draw_shield(self, surface):
         if self.shield:
-            pygame.draw.circle(surface, (80, 255, 160), self.rect.center, 28, 2)
+            pygame.draw.circle(surface, (80, 255, 160), self.rect.center, 40, 2)

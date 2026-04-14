@@ -211,7 +211,7 @@ def menu(screen, clock, font_big, font_med, font_small):
         for s in stars: s.update()
         ocean.draw(screen)
         for s in stars: s.draw(screen)
-        title = font_big.render("SPACE SHOOTER", True, GREEN)
+        title = font_big.render("SHELL VS TRASH", True, GREEN)
         screen.blit(title, title.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 - 60)))
         sub = font_med.render("Premi INVIO o SPAZIO per iniziare", True, GRAY)
         screen.blit(sub, sub.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 10)))
