@@ -10,7 +10,7 @@ from bullet import Bullet
 SPRITESHEET_PATH = os.path.join("assets", "turtle_spritesheet.png")
 FRAME_SIZE       = 64    # ogni frame e 64x64
 FRAME_COUNT      = 4
-ANIM_SPEED       = 16     # cambia frame ogni 8 frame di gioco
+ANIM_SPEED       = 8     # cambia frame ogni 8 frame di gioco
 
 
 def _make_fallback(angle=0):
@@ -150,16 +150,16 @@ class Player(pygame.sprite.Sprite):
     def draw_powerup_hud(self, surface):
         x, y = 12, 32
         font = pygame.font.SysFont("Arial", 13)
-        names = {"triple": "Triplo sparo", "fast": "Cadenza +", "pierce": "Perforante",
-                 "split": "Sdoppiante", "speed": "Velocità +25%"}
+        names = {"triple": "Triple shot", "fast": "Fire rate +", "pierce": "Piercing",
+                 "split": "Splitting", "speed": "Speed +25%"}
         if self.shield:
-            surface.blit(font.render("Scudo attivo", True, (80, 255, 160)), (x, y)); y += 18
+            surface.blit(font.render("Shield active", True, (80, 255, 160)), (x, y)); y += 18
         if self.doubleshoot > 0:
             secs = round(self.doubleshoot / 60, 1)
-            surface.blit(font.render(f"Doppio sparo  {secs}s", True, (80, 200, 255)), (x, y)); y += 18
+            surface.blit(font.render(f"Double shot  {secs}s", True, (80, 200, 255)), (x, y)); y += 18
         for u in self.perm_upgrades:
             surface.blit(font.render(f"[PERM] {names[u]}", True, (255, 220, 80)), (x, y)); y += 18
 
     def draw_shield(self, surface):
         if self.shield:
-            pygame.draw.circle(surface, (80, 255, 160), self.rect.center, 40, 2)
+            pygame.draw.circle(surface, (80, 255, 160), self.rect.center, 28, 2)

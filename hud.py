@@ -16,10 +16,10 @@ def init_fonts():
 
 def draw_hud(surface, score, lives):
     """Disegna punteggio e vite in alto."""
-    score_surf = font_small.render(f"Punteggio: {score}", True, WHITE)
+    score_surf = font_small.render(f"Score: {score}", True, WHITE)
     surface.blit(score_surf, (12, 10))
 
-    lives_label = font_small.render("Vite:", True, WHITE)
+    lives_label = font_small.render("Lives:", True, WHITE)
     surface.blit(lives_label, (SCREEN_W - 130, 10))
 
     for i in range(lives):

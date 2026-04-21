@@ -101,7 +101,7 @@ def stage_transition(screen, clock, stars, font_big, font_med, stage_num=2, ocea
         pygame.display.flip()
 
 # ---------------------------------------------------------------------------
-# SCHERMATA TRANSIZIONE MODALITA INFINITO
+# SCHERMATA TRANSIZIONE MODALITA INFINITE
 # ---------------------------------------------------------------------------
 
 def infinite_transition(screen, clock, stars, font_big, font_med, ocean=None):
@@ -119,9 +119,9 @@ def infinite_transition(screen, clock, stars, font_big, font_med, ocean=None):
         overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
         screen.blit(overlay, (0, 0))
-        t = font_big.render("MODALITÀ INFINITO", True, (255, 220, 80))
+        t = font_big.render("INFINITE MODE", True, (255, 220, 80))
         screen.blit(t, t.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 - 20)))
-        s2 = font_med.render("Sopravvivi il più a lungo possibile!", True, GRAY)
+        s2 = font_med.render("Survive as long as possible!", True, GRAY)
         screen.blit(s2, s2.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 30)))
         pygame.display.flip()
 
@@ -131,11 +131,11 @@ def infinite_transition(screen, clock, stars, font_big, font_med, ocean=None):
 
 def upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, options_keys=None, ocean=None):
     all_upgrades = {
-        "triple": ("Triplo sparo",   ["Spara 3 proiettili", "contemporaneamente"],  (255, 200, 80)),
-        "fast":   ("Cadenza x2",    ["4 colpi al secondo", "permanentemente"],       (80,  200, 255)),
-        "pierce": ("Perforante",    ["Attraversa tutti", "i nemici"],               (255, 120, 80)),
-        "split":  ("Sdoppiante",    ["I proiettili si", "sdoppiano al colpo"],      (180, 100, 255)),
-        "speed":  ("Velocità +25%", ["Navicella più", "veloce del 25%"],              (100, 255, 180)),
+        "triple": ("Triple shot",   ["Shoots 3 bullets", "at once"],  (255, 200, 80)),
+        "fast":   ("Fire rate x2",    ["4 shots per second", "permanently"],       (80,  200, 255)),
+        "pierce": ("Piercing",    ["Pierces through", "all enemies"],               (255, 120, 80)),
+        "split":  ("Splitting",    ["Bullets split", "on hit"],      (180, 100, 255)),
+        "speed":  ("Speed +25%", ["Turtle moves", "25% faster"],              (100, 255, 180)),
     }
     if options_keys is None:
         options_keys = ["triple", "fast", "pierce"]
@@ -163,9 +163,9 @@ def upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, 
         overlay.fill((0, 0, 0, 160))
         screen.blit(overlay, (0, 0))
 
-        title = font_big.render("BOSS SCONFITTO!", True, (255, 220, 80))
+        title = font_big.render("BOSS DEFEATED!", True, (255, 220, 80))
         screen.blit(title, title.get_rect(center=(SCREEN_W // 2, 100)))
-        sub = font_med.render("Scegli il potenziamento permanente", True, GRAY)
+        sub = font_med.render("Choose your permanent upgrade", True, GRAY)
         screen.blit(sub, sub.get_rect(center=(SCREEN_W // 2, 155)))
 
         card_w, card_h = 160, 170
@@ -188,7 +188,7 @@ def upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, 
                 d_surf = font_small.render(line, True, GRAY)
                 screen.blit(d_surf, d_surf.get_rect(center=(x + card_w // 2, y + 110 + j * 18)))
 
-        hint = font_small.render("Premi 1, 2 o 3 per scegliere", True, (80, 80, 100))
+        hint = font_small.render("Press 1, 2 or 3 to choose", True, (80, 80, 100))
         screen.blit(hint, hint.get_rect(center=(SCREEN_W // 2, 410)))
         pygame.display.flip()
 
@@ -213,9 +213,9 @@ def menu(screen, clock, font_big, font_med, font_small):
         for s in stars: s.draw(screen)
         title = font_big.render("SHELL VS TRASH", True, GREEN)
         screen.blit(title, title.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 - 60)))
-        sub = font_med.render("Premi INVIO o SPAZIO per iniziare", True, GRAY)
+        sub = font_med.render("Press ENTER or SPACE to start", True, GRAY)
         screen.blit(sub, sub.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 10)))
-        hint = font_small.render("Frecce / WASD per muoverti  |  Sparo automatico", True, (80, 80, 100))
+        hint = font_small.render("Arrow keys / WASD to move  |  Auto-shoot", True, (80, 80, 100))
         screen.blit(hint, hint.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 55)))
         pygame.display.flip()
 
@@ -289,24 +289,20 @@ def run_game(screen, clock):
 
             # Sparo automatico
             if player.can_shoot():
-               for b in player.shoot():
+                for b in player.shoot():
                     bullets.add(b)
-               bubble_sound.play()
             bullets.update()
 
             # Power-up raccolti
             for pu in pygame.sprite.spritecollide(player, powerups, True):
                 if pu.kind == "shield":
                     player.activate_shield()
-                    powerup_sound.play()
                     spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 12)
                 elif pu.kind == "doubleshoot":
                     player.activate_doubleshoot()
-                    powerup_sound.play()
                     spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 200, 255), 12)
                 elif pu.kind == "life":
                     lives = min(lives + 1, 3)
-                    powerup_sound.play()
                     spawn_particles(particles, player.rect.centerx, player.rect.centery, (255, 80, 80), 12)
 
             # --- BOSS (solo stage 1) ---
@@ -335,7 +331,6 @@ def run_game(screen, clock):
                             killed = boss.hit()
                             spawn_particles(particles, boss.rect.centerx, boss.rect.centery, (210, 120, 255), 5)
                             if killed:
-                                boss_explosion_sound.play()
                                 score += 200
                                 spawn_particles(particles, boss.rect.centerx, boss.rect.centery, (255, 200, 80), 30)
 
@@ -343,7 +338,6 @@ def run_game(screen, clock):
                         if player.absorb_hit():
                             spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 16)
                         else:
-                            damage_sound.play()
                             lives -= 1
                             flash_timer = FLASH_DURATION
                             invincible  = INVINCIBLE_FRAMES
@@ -356,7 +350,7 @@ def run_game(screen, clock):
                         boss = None
                         boss_bullets.empty()
                         # Schermata upgrade
-                        upgrade = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small, ocean=ocean)
+                        upgrade = upgrade_choice_screen(screen, clock, stars, font_big, font_med, font_small)
                         player.activate_perm_upgrade(upgrade)
                         # Transizione stage 2
                         stage = 2
@@ -401,7 +395,6 @@ def run_game(screen, clock):
                     if player.absorb_hit():
                         spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 16)
                     else:
-                        damage_sound.play()
                         lives -= 1
                         flash_timer = FLASH_DURATION
                         invincible  = INVINCIBLE_FRAMES
@@ -415,7 +408,6 @@ def run_game(screen, clock):
                     if player.absorb_hit():
                         spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 16)
                     else:
-                        damage_sound.play()
                         lives -= 1
                         flash_timer = FLASH_DURATION
                         invincible  = INVINCIBLE_FRAMES
@@ -478,7 +470,6 @@ def run_game(screen, clock):
                     if player.absorb_hit():
                         spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 16)
                     else:
-                        damage_sound.play()
                         lives -= 1
                         flash_timer = FLASH_DURATION
                         invincible  = INVINCIBLE_FRAMES
@@ -493,7 +484,6 @@ def run_game(screen, clock):
                     if player.absorb_hit():
                         spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 16)
                     else:
-                        damage_sound.play()
                         lives -= 1
                         flash_timer = FLASH_DURATION
                         invincible  = INVINCIBLE_FRAMES
@@ -522,8 +512,7 @@ def run_game(screen, clock):
             # --- NEMICI NORMALI (entrambi gli stage) ---
             can_spawn = (stage == 1 and (not boss_spawned or boss_defeated) and score < BOSS_TRIGGER_SCORE) \
                      or (stage == 2 and not boss2_spawned and score < BOSS2_TRIGGER_SCORE) \
-                     or (stage == 3 and boss2_defeated and not boss3_spawned and score < BOSS3_TRIGGER_SCORE)\
-                     or (infinite_mode)
+                     or (stage == 3 and boss2_defeated and not boss3_spawned and score < BOSS3_TRIGGER_SCORE)
             if can_spawn:
                 sr = get_spawn_rate(score, infinite=infinite_mode)
                 if frame % sr == 0:
@@ -556,7 +545,6 @@ def run_game(screen, clock):
                         color = enemy.color if killed else enemy.color_lt
                         spawn_particles(particles, enemy.rect.centerx, enemy.rect.centery, color, 10 if killed else 4)
                         if killed:
-                            explosion_sound.play()
                             score += enemy.points
                             drop = enemy.get_drop()
                             if drop:
@@ -565,12 +553,11 @@ def run_game(screen, clock):
                         if not bullet.alive():
                             break
 
-            # Proiettili nemici -> player
+            # Proiettilall enemies -> player
             if invincible == 0 and pygame.sprite.spritecollide(player, enemy_bullets, True):
                 if player.absorb_hit():
                     spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 16)
                 else:
-                    damage_sound.play()
                     lives -= 1
                     flash_timer = FLASH_DURATION
                     invincible  = INVINCIBLE_FRAMES
@@ -586,7 +573,6 @@ def run_game(screen, clock):
                 if player.absorb_hit():
                     spawn_particles(particles, player.rect.centerx, player.rect.centery, (80, 255, 160), 16)
                 else:
-                    damage_sound.play()
                     lives -= 1
                     flash_timer = FLASH_DURATION
                     invincible  = INVINCIBLE_FRAMES
@@ -641,13 +627,13 @@ def run_game(screen, clock):
         draw_hud(screen, score, lives)
         # Highscore in HUD
         font_s = pygame.font.SysFont("Arial", 13)
-        hs_surf = font_s.render(f"Record: {highscore}", True, (255, 220, 80))
+        hs_surf = font_s.render(f"Best: {highscore}", True, (255, 220, 80))
         screen.blit(hs_surf, hs_surf.get_rect(right=SCREEN_W - 10, top=48))
         player.draw_powerup_hud(screen)
 
         # Indicatore stage
         font_s = pygame.font.SysFont("Arial", 13)
-        stage_label = "INFINITO" if infinite_mode else f"Stage {stage}"
+        stage_label = "INFINITE" if infinite_mode else f"Stage {stage}"
         stage_surf = font_s.render(stage_label, True, (255, 220, 80) if infinite_mode else GRAY)
         screen.blit(stage_surf, (SCREEN_W - 80, 30))
 
@@ -658,11 +644,11 @@ def run_game(screen, clock):
         if game_state == "paused":
             screen.blit(pause_surf, (0, 0))
             from hud import font_big, font_med, font_small
-            t = font_big.render("PAUSA", True, WHITE)
+            t = font_big.render("PAUSED", True, WHITE)
             screen.blit(t, t.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 - 40)))
-            s = font_med.render("Premi ESC per continuare", True, GRAY)
+            s = font_med.render("Press ESC to continue", True, GRAY)
             screen.blit(s, s.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 10)))
-            hs = font_small.render(f"Highscore: {highscore}", True, (255, 220, 80))
+            hs = font_small.render(f"Best score: {highscore}", True, (255, 220, 80))
             screen.blit(hs, hs.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 50)))
 
         if game_state == "gameover":
@@ -670,16 +656,16 @@ def run_game(screen, clock):
             overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
             overlay.fill((10, 10, 20, 180))
             screen.blit(overlay, (0, 0))
-            t = font_big.render("Game Over", True, RED)
+            t = font_big.render("GAME OVER", True, RED)
             screen.blit(t, t.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 - 60)))
-            sc = font_med.render(f"Punteggio: {score}", True, WHITE)
+            sc = font_med.render(f"Score: {score}", True, WHITE)
             screen.blit(sc, sc.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 - 10)))
             if score >= highscore:
-                hs = font_med.render("Nuovo record!", True, (255, 220, 80))
+                hs = font_med.render("New record!", True, (255, 220, 80))
             else:
-                hs = font_med.render(f"Record: {highscore}", True, (255, 220, 80))
+                hs = font_med.render(f"Best: {highscore}", True, (255, 220, 80))
             screen.blit(hs, hs.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 35)))
-            r = font_small.render("R per ricominciare", True, GRAY)
+            r = font_small.render("R to restart", True, GRAY)
             screen.blit(r, r.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 80)))
 
         pygame.display.flip()
@@ -690,21 +676,6 @@ def run_game(screen, clock):
 
 if __name__ == "__main__":
     pygame.init()
-    pygame.mixer.init()
-    pygame.mixer.music.load("assets/Pacific Ocean.mp3")
-    pygame.mixer.music.set_volume(0.05)
-    pygame.mixer.music.play(-1)
-    bubble_sound = pygame.mixer.Sound("assets/bubbles-single1.wav")
-    bubble_sound.set_volume(0.6)
-    explosion_sound = pygame.mixer.Sound("assets/explosion.wav")
-    explosion_sound.set_volume(0.1)
-    boss_explosion_sound = pygame.mixer.Sound("assets/Chunky Explosion.mp3")
-    boss_explosion_sound.set_volume(0.2)
-    boss_explosion_sound.play()
-    damage_sound = pygame.mixer.Sound("assets/damage_taken.mp3")
-    damage_sound.set_volume(0.6)
-    powerup_sound = pygame.mixer.Sound("assets/power_up_sound_v1.ogg")
-    powerup_sound.set_volume(0.4)   
     screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
     pygame.display.set_caption(TITLE)
     clock = pygame.time.Clock()
